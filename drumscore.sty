@@ -1,0 +1,147 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                              %
+%         DDDDDDD        RRRRRRR       UUU     UUU      M         M            %
+%         D      D       R      R       U       U       MM       MM            %
+%         D       D      R       R      U       U       M M     M M            %
+%         D        D     R       R      U       U       M M     M M            %
+%         D        D     RRRRRRRR       U       U       M  M   M  M            %
+%         D        D     R      R       U       U       M  M   M  M            %
+%         D       D      R       R      U       U       M   M M   M            %
+%         D      D       R       R       U     U        M   M M   M            %
+%         DDDDDDD        R       R        UUUUU         M    M    M            %
+%                                                                              %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{drumscore}[2017/11/11 drum scoring Macro set]
+
+\RequirePackage{musixtex}
+\input{musixper}
+
+\newdimen\DrmS@tempdima
+\newdimen\DrmS@tempdimb
+\newdimen\DrmS@tempdimc
+\newcount\DrmS@tempcnta
+\newcount\DrmS@tempcntb
+\newcount\DrmS@tempcntc
+\newtoks\DrmS@temptoka
+
+\def\DrmS@drum@BD{1}
+\def\DrmS@drum@SN{5}
+\def\DrmS@drum@HT{7}
+\def\DrmS@drum@MT{6}
+\def\DrmS@drum@LT{4}
+\def\DrmS@drum@FT{3}
+\def\DrmS@drum@HH{9}
+\def\DrmS@drum@fHH{-1}
+\def\DrmS@drum@CY{10}
+\def\DrmS@drum@RD{11}
+
+\DeclareRobustCommand{\zBDrest}[1]{\raise-3\Interligne\rlap{#1}}
+\DeclareRobustCommand{\zSNrest}[1]{\raise 3\Interligne\rlap{#1}}
+\newcommand{\drumNum}[1]{\csname DrmS@drum@#1\endcsname}
+
+\def\dozqu{\advancefalse\doqu}
+\def\dozql{\advancefalse\doql}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Bass Drum  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\DeclareRobustCommand{\qBD}{\ql{\DrmS@drum@BD}}
+\DeclareRobustCommand{\cBD}{\cl{\DrmS@drum@BD}}
+\DeclareRobustCommand{\ccBD}{\ccl{\DrmS@drum@BD}}
+\DeclareRobustCommand{\zqBD}{\zql{\DrmS@drum@BD}}
+\DeclareRobustCommand{\zcBD}{\zcl{\DrmS@drum@BD}}
+\DeclareRobustCommand{\zccBD}{\zccl{\DrmS@drum@BD}}
+\DeclareRobustCommand{\qbBD}[1]{\qb{#1}{\DrmS@drum@BD}}
+\DeclareRobustCommand{\zqbBD}[1]{\zqb{#1}{\DrmS@drum@BD}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Snare Drum %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\DeclareRobustCommand{\qSN}{\qu{\DrmS@drum@SN}}
+\DeclareRobustCommand{\cSN}{\cu{\DrmS@drum@SN}}
+\DeclareRobustCommand{\ccSN}{\ccu{\DrmS@drum@SN}}
+\DeclareRobustCommand{\zqSN}{\zqu{\DrmS@drum@SN}}
+\DeclareRobustCommand{\zcSN}{\zcu{\DrmS@drum@SN}}
+\DeclareRobustCommand{\zccSN}{\zccu{\DrmS@drum@SN}}
+\DeclareRobustCommand{\qbSN}[1]{\qb{#1}{\DrmS@drum@SN}}
+\DeclareRobustCommand{\zqbSN}[1]{\zqb{#1}{\DrmS@drum@SN}}
+
+\DeclareRobustCommand{\qRIM}{\doqu{\DrmS@drum@SN}}
+\DeclareRobustCommand{\cRIM}{\docu{\DrmS@drum@SN}}
+\DeclareRobustCommand{\ccRIM}{\doccu{\DrmS@drum@SN}}
+\DeclareRobustCommand{\zqRIM}{\dozqu{\DrmS@drum@SN}}
+\DeclareRobustCommand{\zcRIM}{\dozcu{\DrmS@drum@SN}}
+\DeclareRobustCommand{\zccRIM}{\dozccu{\DrmS@drum@SN}}
+\DeclareRobustCommand{\qbRIM}[1]{\doqb{#1}{\DrmS@drum@SN}}
+\DeclareRobustCommand{\zqbRIM}[1]{\dozqb{#1}{\DrmS@drum@SN}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Tom Tom  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\DeclareRobustCommand{\qHT}{\qu{\DrmS@drum@HT}}
+%\DeclareRobustCommand{\cHT}{\cu{\DrmS@drum@HT}}%uplatexカーネルと競合
+\DeclareRobustCommand{\ccHT}{\ccu{\DrmS@drum@HT}}
+\DeclareRobustCommand{\zqHT}{\zqu{\DrmS@drum@HT}}
+\DeclareRobustCommand{\zcHT}{\zcu{\DrmS@drum@HT}}
+\DeclareRobustCommand{\zccHT}{\zccu{\DrmS@drum@HT}}
+\DeclareRobustCommand{\qbHT}[1]{\qb{#1}{\DrmS@drum@HT}}
+\DeclareRobustCommand{\zqbHT}[1]{\zqb{#1}{\DrmS@drum@HT}}
+
+\DeclareRobustCommand{\qMT}{\qu{\DrmS@drum@MT}}
+\DeclareRobustCommand{\cMT}{\cu{\DrmS@drum@MT}}
+\DeclareRobustCommand{\ccMT}{\ccu{\DrmS@drum@MT}}
+\DeclareRobustCommand{\zqMT}{\zqu{\DrmS@drum@MT}}
+\DeclareRobustCommand{\zcMT}{\zcu{\DrmS@drum@MT}}
+\DeclareRobustCommand{\zccMT}{\zccu{\DrmS@drum@MT}}
+\DeclareRobustCommand{\qbMT}[1]{\qb{#1}{\DrmS@drum@MT}}
+\DeclareRobustCommand{\zqbMT}[1]{\zqb{#1}{\DrmS@drum@MT}}
+
+\DeclareRobustCommand{\qLT}{\qu{\DrmS@drum@LT}}
+\DeclareRobustCommand{\cLT}{\cu{\DrmS@drum@LT}}
+\DeclareRobustCommand{\ccLT}{\ccu{\DrmS@drum@LT}}
+\DeclareRobustCommand{\zqLT}{\zqu{\DrmS@drum@LT}}
+\DeclareRobustCommand{\zcLT}{\zcu{\DrmS@drum@LT}}
+\DeclareRobustCommand{\zccLT}{\zccu{\DrmS@drum@LT}}
+\DeclareRobustCommand{\qbLT}[1]{\qb{#1}{\DrmS@drum@LT}}
+\DeclareRobustCommand{\zqbLT}[1]{\zqb{#1}{\DrmS@drum@LT}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Hi-Hat %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\DeclareRobustCommand{\qHH}{\doqu{\DrmS@drum@HH}}
+\DeclareRobustCommand{\cHH}{\docu{\DrmS@drum@HH}}
+\DeclareRobustCommand{\ccHH}{\doccu{\DrmS@drum@HH}}
+\DeclareRobustCommand{\zqHH}{\dozqu{\DrmS@drum@HH}}
+\DeclareRobustCommand{\zcHH}{\dozcu{\DrmS@drum@HH}}
+\DeclareRobustCommand{\zccHH}{\dozccu{\DrmS@drum@HH}}
+\DeclareRobustCommand{\qbHH}[1]{\doqb{#1}{\DrmS@drum@HH}}
+\DeclareRobustCommand{\zqbHH}[1]{\dozqb{#1}{\DrmS@drum@HH}}
+
+\DeclareRobustCommand{\qfHH}{\doql{\DrmS@drum@fHH}}
+\DeclareRobustCommand{\cfHH}{\docl{\DrmS@drum@fHH}}
+\DeclareRobustCommand{\ccfHH}{\doccl{\DrmS@drum@fHH}}
+\DeclareRobustCommand{\zqfHH}{\dozql{\DrmS@drum@fHH}}
+\DeclareRobustCommand{\zcfHH}{\dozcl{\DrmS@drum@fHH}}
+\DeclareRobustCommand{\zccfHH}{\dozccl{\DrmS@drum@fHH}}
+\DeclareRobustCommand{\qbfHH}[1]{\doqb{#1}{\DrmS@drum@fHH}}
+\DeclareRobustCommand{\zqbfHH}[1]{\dozqb{#1}{\DrmS@drum@fHH}}
+
+\def\@openHH{\n@iv120\uacc@Char}
+
+\DeclareRobustCommand{\closeHH}{\ptr{\DrmS@drum@CY}}
+\DeclareRobustCommand{\openHH}{\@openHH{\DrmS@drum@CY}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Crash Cymbal %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\DeclareRobustCommand{\qCY}{\doqu{\DrmS@drum@CY}}
+\DeclareRobustCommand{\cCY}{\docu{\DrmS@drum@CY}}
+\DeclareRobustCommand{\ccCY}{\doccu{\DrmS@drum@CY}}
+\DeclareRobustCommand{\zqCY}{\dozqu{\DrmS@drum@CY}}
+\DeclareRobustCommand{\zcCY}{\dozcu{\DrmS@drum@CY}}
+\DeclareRobustCommand{\zccCY}{\dozccu{\DrmS@drum@CY}}
+\DeclareRobustCommand{\qbCY}[1]{\doqb{#1}{\DrmS@drum@CY}}
+\DeclareRobustCommand{\zqbCY}[1]{\dozqb{#1}{\DrmS@drum@CY}}
+
+\DeclareRobustCommand{\usfCY}{\usf{\DrmS@drum@CY}}
+\DeclareRobustCommand{\busfCY}[1]{\busf{#1}{\DrmS@drum@CY}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Ride Cymbal  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\DeclareRobustCommand{\qRD}{\doqu{\DrmS@drum@RD}}
+\DeclareRobustCommand{\cRD}{\docu{\DrmS@drum@RD}}
+\DeclareRobustCommand{\ccRD}{\doccu{\DrmS@drum@RD}}
+\DeclareRobustCommand{\zqRD}{\dozqu{\DrmS@drum@RD}}
+\DeclareRobustCommand{\zcRD}{\dozcu{\DrmS@drum@RD}}
+\DeclareRobustCommand{\zccRD}{\dozccu{\DrmS@drum@RD}}
+\DeclareRobustCommand{\qbRD}[1]{\doqb{#1}{\DrmS@drum@RD}}
+\DeclareRobustCommand{\zqbRD}[1]{\dozqb{#1}{\DrmS@drum@RD}}

@@ -1,0 +1,413 @@
+% coding=utf-8
+\ProvidesPackage{gcmcstyle}[2020/03/08 gachimuchi loading packages]
+%%==============================================================================
+%% Declare Option
+%%==============================================================================
+\newif\ifgcmc@usebiblatex
+\newif\ifgcmc@usejlreqjfm
+\DeclareOption{biblatex}{\gcmc@usebiblatextrue}
+\DeclareOption{nousebiblatex}{\gcmc@usebiblatexfalse}
+\DeclareOption{jlreqjfm}{\gcmc@usejlreqjfmtrue}
+\DeclareOption{nousejlreqjfm}{\gcmc@usejlreqjfmfalse}
+\DeclareOption*{\PackageWarning{gcmcstyle}{Unknown option '\CurrentOption'}}
+\ExecuteOptions{biblatex}
+\ExecuteOptions{nousejlreqjfm}
+\ProcessOptions\relax
+%%==============================================================================
+%% Load packages
+%%==============================================================================
+\RequirePackage{graphicx}
+\RequirePackage{xcolor}
+\RequirePackage{csquotes}
+\RequirePackage{multirow}
+\RequirePackage{subcaption}
+\RequirePackage{ifdraft}
+% \RequirePackage{enumitem}
+\RequirePackage{standalone}
+\@ifpackageloaded{geometry}{}{%
+  \RequirePackage[pass]{geometry}
+}
+\ifgcmc@usebiblatex
+  \RequirePackage[backend=biber,style=numeric,hyperref=true]{biblatex}
+\fi
+\RequirePackage{bellsloadingpkgs}
+\RequirePackage{gachimuchimacro}
+\RequirePackage{gachimuchipatch}
+\RequirePackage{zrjapunct1}
+\RequirePackage{siunitx}
+\RequirePackage[caption=default,french,english,japanese]{pxbabel}
+\babeltags{Fr=french}
+
+%%==============================================================================
+%% define macros (\DeclareUnicodeCharacter depends on "inputenc" package)
+%%==============================================================================
+\let\tczji@do@emdash\relax
+\DeclareRobustCommand{\tczji@do@emdash}{% 保護付
+  \texorpdfstring{\@ifnextchar\tczji@do@emdash% 次が \tczji@do@emdash か?
+    {\tczji@do@emdash@a}{\tczji@do@emdash@b}}{---}}
+\def\tczji@do@dbldash{%
+  \hbox to 2zw{\hss\tczji@J@horizbar\kern-.15zw\tczji@J@horizbar\hss}}
+
+\def\Keyword{\unl}
+\renewcommand{\Aug}{\nobreak\subsc{\textrm{aug}}}
+\renewcommand{\Dim}{\nobreak\subsc{\textrm{dim}}}
+\renewcommand{\Dimt}{\nobreak\subsc{\textrm{dim}}}
+\def\basslowoct{\bassclef\raise-8\internote\hbox\@to\z@{\txtfont{\kern -5.0\internote 8}\hss}}
+\newcommand{\TODO}[1]{\par {\small [ToDo] #1}}
+
+%\expandafter\def\expandafter\bell@envtemplate\expandafter{%
+%  \bell@envtemplate
+%  \setlength\leftmarginii {2\bell@zw}%
+%  \setlength\leftmarginiii{2\bell@zw}%
+%  \setlength\leftmarginiv {2\bell@zw}%
+%  \setlength\leftmarginv  {1\bell@zw}%
+%  \setlength\leftmarginvi {1\bell@zw}%
+%}
+\edef\bell@envtemplate{%
+  \expandonce{\bell@envtemplate}%
+  \unexpanded{%
+    \setlength\leftmarginii {2\bell@zw}%
+    \setlength\leftmarginiii{2\bell@zw}%
+    \setlength\leftmarginiv {2\bell@zw}%
+    \setlength\leftmarginv  {1\bell@zw}%
+    \setlength\leftmarginvi {1\bell@zw}%
+  }%
+}
+\edef\description{%
+  \unexpanded{%
+    \setlength\leftmargini  {1\bell@zw}%
+    \setlength\leftmarginii {1\bell@zw}%
+    \setlength\leftmarginiii{1\bell@zw}%
+    \setlength\leftmarginiv {1\bell@zw}%
+    \setlength\leftmarginv  {1\bell@zw}%
+    \setlength\leftmarginvi {1\bell@zw}%
+  }%
+  \expandonce{\description}%
+}
+\def\bell@Funktionstyle{\let\DD\WechselD
+  \let\SS\WechselS \let\ss\Wechsels
+  \itshape%
+}
+\robustify{\Funktion}% temporal patch
+
+\def\reserved@a{\newif\if@mainmatter\@mainmattertrue}
+\ifdefined \if@mainmatter \else \reserved@a \fi
+
+\def\loffset#1#2{\begingroup\edef\s@o@{#1\qn@width}\offs@t{#2}\endgroup}%
+\def\roffset#1#2{\begingroup\edef\s@o@{-#1\qn@width}\offs@t{#2}\endgroup}%
+
+%%==============================================================================
+%% 体裁
+%%==============================================================================
+%% 章見出し
+
+%% 節見出し
+\def\@sect#1#2#3#4#5#6[#7]#8{%
+  \ifnum #2>\c@secnumdepth
+    \let\@svsec\@empty
+  \else
+    \if@mainmatter
+      \refstepcounter{#1}%
+      \protected@edef\@svsec{\@seccntformat{#1}\relax}%
+    \else
+      \protected@edef\@svsec{\relax}%
+    \fi
+  \fi
+  \@tempskipa #5\relax
+  \ifdim \@tempskipa<\z@
+    \def\@svsechd{%
+      #6{\hskip #3\relax
+      \@svsec #8}%
+      \csname #1mark\endcsname{#7}%
+      \addcontentsline{toc}{#1}{%
+        \ifnum #2>\c@secnumdepth \else
+          % \protect\numberline{\csname the#1\endcsname}%
+          \if@mainmatter \protect\numberline{\csname toc@#1\endcsname}\fi%
+        \fi
+        #7}}% 目次にフルネームを載せるなら #8
+  \else
+    \begingroup
+      \interlinepenalty \@M % 下から移動
+      #6{%
+        \@hangfrom{\hskip #3\relax\@svsec}%
+        #8\@@par}%
+    \endgroup
+    \csname #1mark\endcsname{#7}%
+    \addcontentsline{toc}{#1}{%
+      \ifnum #2>\c@secnumdepth \else
+        % \protect\numberline{\csname the#1\endcsname}%
+          \if@mainmatter \protect\numberline{\csname toc@#1\endcsname}\fi%
+      \fi
+      #7}% 目次にフルネームを載せるならここは #8
+  \fi
+  \@xsect{#5}}
+
+%% 体裁
+\renewcommand*{\descriptionlabel}[1]{%
+  \kern.5\bell@zw\makebox[1\bell@zw][c]{\textbullet}\kern.5\bell@zw\normalfont\headfont#1\hfil}
+
+%% 節見出し用体裁
+% \def\@seccntformat#1{\csname the#1\endcsname\quad}
+\def\@seccntformat#1{\csname scf@#1\endcsname}
+\def\scf@section      {\thesection\quad}
+\def\scf@subsection   {\thesubsection\quad}
+\def\scf@subsubsection{\thesubsubsection\quad}
+\def\scf@paragraph    {}
+\def\scf@subparagraph {}
+
+%% 目次用体裁
+\def\toc@section      {\thesection}
+\def\toc@subsection   {\thesubsection}
+\def\toc@subsubsection{\thesubsubsection}
+\def\toc@paragraph    {}
+\def\toc@subparagraph {}
+
+%% 合印用体裁
+\def\thefootnote{\ifnum\c@footnote>\z@\leavevmode\@arabic\c@footnote)\fi}
+
+%% 参照用体裁: クラス・ファイルとかでどうにかするまではここで対処する
+\renewcommand{\chapref}[1]{\@chapapp\ref{chap:#1}\@chappos}
+
+%% フォントサイズ設定
+%% たぶんここでやるよりクラス・ファイルでやるべき
+%% normalsize：  {12\ascQ}{21trueH}
+%% small：       {10\ascQ}{16trueH}
+%% footnotesize： {9\ascQ}{13trueH}
+%% scriptsize：   {8\ascQ}{10trueH}
+%% tiny：         {7\ascQ} {9trueH}
+%% large：       {14\ascQ}{21trueH}
+%% Large：       {17\ascQ}{25trueH}
+%% LARGE：       {20\ascQ}{28trueH}
+%% huge：        {25\ascQ}{33trueH}
+%% Huge：        {30\ascQ}{40trueH}
+%% HUGE：        {36\ascQ}{48trueH}
+\ifjsc@mag\catcode`\?=9\else\catcode`\?=11\let\p@?\jsc@mpt\fi
+\def\n@baseline{21\trueH}
+\renewcommand{\normalsize}{%
+  \bxjs@if@narrowbaselines{%
+    \@setfontsize\normalsize{12\ascQ}{17\trueH}%
+  }{%else
+    \@setfontsize\normalsize{12\ascQ}{\n@baseline}%
+  }%
+  \abovedisplayskip 11\p@? \@plus3\p@? \@minus4\p@?
+  \abovedisplayshortskip \z@ \@plus3\p@?
+  \belowdisplayskip 9\p@? \@plus3\p@? \@minus4\p@?
+  \belowdisplayshortskip \belowdisplayskip
+  \let\@listi\@listI}
+\normalsize
+\renewcommand{\small}{%
+  \bxjs@if@narrowbaselines{%
+    \@setfontsize\small{10\ascQ}{12\trueH}%
+  }{%else
+    \@setfontsize\small{10\ascQ}{16\trueH}%
+  }%
+  \abovedisplayskip 9\p@? \@plus3\p@? \@minus4\p@?
+  \abovedisplayshortskip  \z@ \@plus3\p@?
+  \belowdisplayskip \abovedisplayskip
+  \belowdisplayshortskip \belowdisplayskip
+  \def\@listi{\leftmargin\leftmargini
+              \topsep \z@
+              \parsep \z@
+              \itemsep \parsep}}
+\renewcommand{\footnotesize}{%
+  \bxjs@if@narrowbaselines{%
+    \@setfontsize\small{9\ascQ}{11\trueH}%
+  }{%else
+    \@setfontsize\small{9\ascQ}{13\trueH}%
+  }%
+  \abovedisplayskip 6\p@? \@plus2\p@? \@minus3\p@?
+  \abovedisplayshortskip  \z@ \@plus2\p@?
+  \belowdisplayskip \abovedisplayskip
+  \belowdisplayshortskip \belowdisplayskip
+  \def\@listi{\leftmargin\leftmargini
+              \topsep \z@
+              \parsep \z@
+              \itemsep \parsep}}
+\renewcommand{\scriptsize}{\@setfontsize\scriptsize{8\ascQ}{10\trueH}}
+\renewcommand{\tiny}{\@setfontsize\scriptsize{7\ascQ}{9\trueH}}
+\if@twocolumn
+  \renewcommand{\large}{\@setfontsize\large{14\ascQ}{\n@baseline}}
+\else
+  \renewcommand{\large}{\jsc@setfontsize\large{14\ascQ}{21\trueH}}
+\fi
+\renewcommand{\Large}{\jsc@setfontsize\Large{17\ascQ}{25\trueH}}
+\renewcommand{\LARGE}{\jsc@setfontsize\LARGE{20\ascQ}{28\trueH}}
+\renewcommand{\huge}{\jsc@setfontsize\huge{25\ascQ}{33\trueH}}
+\renewcommand{\Huge}{\jsc@setfontsize\Huge{30\ascQ}{40\trueH}}
+\renewcommand{\HUGE}{\jsc@setfontsize\HUGE{36\ascQ}{48\trueH}}
+
+\catcode`\?=12\relax
+%% 注釈環境のフォントサイズ設定
+\def\bell@fsize@NB{\jafontsize{10Q}{16H}\selectfont}
+\let\bell@fsize@Yodan\bell@fsize@NB
+\let\bell@fsize@chuui\bell@fsize@NB
+\let\bell@fsize@chuui\bell@fsize@NB
+
+%%==============================================================================
+%% JFMの実験
+%%==============================================================================
+% 少なくともTeXLive 2020 10-01以前向け補修
+
+\ifgcmc@usejlreqjfm
+  \@ifundefined{Cjascale}{%
+    \if@jsclasses\def\bell@gcmc@scale{0.92469}\else\def\bell@gcmc@scale{0.962216}\fi
+  }{\edef\bell@gcmc@scale{\Cjascale}}
+%% jlreq-deluxeを読み込むとかではなく，単純にJFMを設定するだけ．
+  \DeclareFontShape{JY2}{mc}{m}{n}{<-> s * [\bell@gcmc@scale] jlreq--upnmlminr-h}{}
+  \DeclareFontShape{JT2}{mc}{m}{n}{<-> s * [\bell@gcmc@scale] jlreq--upnmlminr-v}{}
+  \DeclareFontShape{JY2}{gt}{m}{n}{<-> s * [\bell@gcmc@scale] jlreq--upnmlgothr-h}{}
+  \DeclareFontShape{JT2}{gt}{m}{n}{<-> s * [\bell@gcmc@scale] jlreq--upnmlgothr-v}{}
+  \DeclareFontShape{JY2}{mc}{b}{n}{<-> s * [\bell@gcmc@scale] jlreq--upnmlminb-h}{}
+  \DeclareFontShape{JT2}{mc}{b}{n}{<-> s * [\bell@gcmc@scale] jlreq--upnmlminb-v}{}
+  \DeclareFontShape{JY2}{gt}{b}{n}{<-> s * [\bell@gcmc@scale] jlreq--upnmlgothb-h}{}
+  \DeclareFontShape{JT2}{gt}{b}{n}{<-> s * [\bell@gcmc@scale] jlreq--upnmlgothb-v}{}
+\fi
+%% otfの吐くwarning対処のためにbold seriesを明示的に示しておく．
+\@ifpackageloaded{otf}{%
+  \DeclareFontShape{JY2}{hmc}{b}{n}{<->ssub*hmc/bx/n}{}
+  \DeclareFontShape{JT2}{hmc}{b}{n}{<->ssub*hmc/bx/n}{}
+  \DeclareFontShape{JY2}{hgt}{b}{n}{<->ssub*hgt/bx/n}{}
+  \DeclareFontShape{JT2}{hgt}{b}{n}{<->ssub*hgt/bx/n}{}
+}{}
+
+\iffalse % まだ調整中
+  % 和文間隔
+  \DeclareRobustCommand*\　{\futurelet\jlreq@nextchar\jlreq@zenkakuspace@ignorespaces}
+  % 後続の空白を無視する処理
+  \edef\jlreq@zenkakuspace@ignorespaces{%
+    \noexpand\ifx\expandonce{\space}\unexpanded{\jlreq@nextchar\expandafter\jlreq@zenkakuspace@ignorespaces@\else\expandafter\jlreq@zenkakuspace@main\fi}%
+  }
+  \expandafter\def\expandafter\jlreq@zenkakuspace@ignorespaces@\space{\　}
+
+  \def\jlreq@tempa{}
+  \def\jlreq@do#1{\jlreq@ifendmark{#1}{}{\appto\jlreq@tempa{\ifnum\lastnodechar=`#1 1\fi}\jlreq@do}}
+  \expandafter \jlreq@do \jlreq@charlist@dividingpunctuationmarks \jlreq@endmark
+
+  \edef\@tempa{\noexpand\ifnum0\expandonce{\jlreq@tempa}>0 }
+  \expandafter \DeclareRobustCommand \expandafter *\expandafter \jlreq@zenkakuspace@main \expandafter{%
+    \@tempa
+      \hskip 1\jlreq@zw\hbox{}%
+      \jlreq@lastnodechar=`　
+      \expandafter\jlreq@fixjfm
+    \else\expandafter　\fi
+  }
+
+% \ifx l\jlreq@engine <- uplatexなので恒常的にfalse
+  \iffalse
+    {
+      \catcode`　=\active
+      \global\let　=\jlreq@zenkakuspace@main
+    }
+    \AtBeginDocument{\catcode`　=\active}
+  \fi
+
+% \jaspace
+  \DeclareRobustCommand*{\jaspace}[1]{%
+    \ifcsname jlreq@jaspace@#1\endcsname\csname jlreq@jaspace@#1\endcsname
+    \else\ClassError{jlreq}{unknown jaspace: #1}{\@ehc}\fi
+  }
+  \def\jlreq@jaspace@zenkaku{\hskip\glueexpr 1\jlreq@zw\relax}
+  \def\jlreq@jaspace@nibu{\hskip\glueexpr .5\jlreq@zw\relax}
+  \def\jlreq@jaspace@shibu{\hskip\glueexpr .25\jlreq@zw\relax}
+
+  % 区切り約物．\？ みたいな命令を作る．直後の空きが自動で入る．
+  % \？*とすると文中の？として扱われる．
+  \def\jlreq@tempa{}
+  \def\jlreq@do#1{\jlreq@ifendmark{#1}{}{\appto\jlreq@tempa{\ifx\jlreq@nextchar #11\fi}\jlreq@do}}
+  \expandafter\jlreq@do\jlreq@charlist@closingbrackets\jlreq@endmark
+  \edef\jlreq@dividingpunctuationmarkscommand{%
+    \noexpand\ifnum 0\expandonce{\jlreq@tempa}>0 \unexpanded{\expandafter\ignorespaces\else\expandafter\　\fi}%
+  }
+  \def\jlreq@do#1{%
+    \jlreq@ifendmark{#1}{}{
+      \expandafter\DeclareRobustCommand\expandafter*\csname #1\endcsname{%
+        \jlreq@ifstar
+          {\hskip .25\jlreq@zw #1\hskip .25\jlreq@zw\ignorespaces}%
+          {#1\futurelet\jlreq@nextchar\jlreq@dividingpunctuationmarkscommand}%
+      }
+      \jlreq@do
+    }
+  }
+  \expandafter\jlreq@do\jlreq@charlist@dividingpunctuationmarks\jlreq@endmark
+\fi
+
+%%==============================================================================
+%% biblatex 設定
+%%==============================================================================
+% 2020-10-01あたりで壊れるので直そう！
+\providecommand{\ExecuteBibliographyOptions}[1]{}
+\ExecuteBibliographyOptions{refsegment=chapter}
+
+\ifgcmc@usebiblatex
+%% paren (from biblatex.sty)
+  \renewcommand*{\bibleftparen}{（}
+  \renewcommand*{\bibrightparen}{）\midsentence}
+  \let\midsentence\relax
+%% citetitle (from biblatex.def)
+  \DeclareCiteCommand{\citetitle}
+    {\boolfalse{citetracker}%
+     \boolfalse{pagetracker}%
+     \usebibmacro{prenote}}
+    {\ifciteindex
+       {\indexfield{indextitle}}
+       {}%
+     \printtext[bibhyperref]{\printfield[citetitle]{labeltitle}}%
+     ~\mkbibbrackets{\usebibmacro{cite}}}
+    {\multicitedelim}
+    {\usebibmacro{postnote}}
+%% citetitle (from biblatex.def)
+  \newrobustcmd*{\citetitleauthor}{\AtNextCite{\DeclareNameAlias{labelname}{given-family}}\bell@citetitleauthor}
+  \DeclareCiteCommand{\bell@citetitleauthor}
+    {\boolfalse{citetracker}%
+     \boolfalse{pagetracker}%
+     \usebibmacro{prenote}}
+    {\ifciteindex
+       {\indexfield{indextitle}}
+       {}%
+     \printtext[bibhyperref]{\printfield[citetitle]{labeltitle}}，%
+     \printnames{labelname}%
+     \mkbibbrackets{\usebibmacro{cite}}}%
+    {\multicitedelim}
+    {\usebibmacro{postnote}}
+%% citetitleを括弧で囲むヤツ？
+  \DeclareCiteCommand{\citetitlep}[\mkbibparens]
+    {\boolfalse{citetracker}%
+     \boolfalse{pagetracker}%
+     \usebibmacro{prenote}}
+    {\ifciteindex
+       {\indexfield{indextitle}}
+       {}%
+     \mkbibbrackets{\usebibmacro{cite}}%
+     \printtext[bibhyperref]{\printfield[citetitle]{labeltitle}}}
+    {\multicitedelim}
+    {\usebibmacro{postnote}}
+  \addbibresource{music_text.bib}
+\fi
+
+%%==============================================================================
+%% その他初期設定
+%%==============================================================================
+
+\setmaxinstruments{9}
+\setmaxgroups{4}
+\setmaxslurs\maxinstruments
+
+\hypersetup{draft=false,final=true}
+\hypersetup{citecolor=teal}
+\hypersetup{colorlinks=true}
+
+\geometricskipscale
+\tinymusicsize
+\settowidth{\flwidth}{\musixchar50}
+\settowidth{\shwidth}{\musixchar52}
+\settowidth{\nawidth}{\musixchar54}
+\settowidth{\dflwidth}{\musixchar51}
+\settowidth{\dshwidth}{\musixchar53}
+
+%% <*draft>
+\ifdraft{%
+  \usepackage[inline]{showlabels}
+  \renewcommand{\showlabelfont}{\small\ttfamily\color{blue}}
+}{}
+%% </draft>
+\endinput

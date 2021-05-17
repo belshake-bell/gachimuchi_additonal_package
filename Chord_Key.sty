@@ -1,0 +1,97 @@
+
+
+
+
+\def\roman@c@{\romannumeral\count@}%
+\edef\noexpand@newtoks{\noexpand\newtoks}%
+
+\def\bell@CKey@init{%
+	\count@\z@
+	\loop \ifnum\count@<24%
+		\expandafter \noexpand@newtoks \csname bell@CKey@toks\roman@c@\endcsname
+		\advance\count@\@ne
+	\repeat
+}
+\def\bell@CKey@setFlag{%
+	\ifnum\@tmpcnta\@ne%flag sharp
+		\csname bell@CKey@toks\romannumeral\bell@CKey@Flags\endcsname{s}%
+	\else\ifnum\@tmpcnta\m@ne%flag flat
+		\csname bell@CKey@toks\romannumeral\bell@CKey@Flags\endcsname{f}%
+	\else%flag natural
+		\csname bell@CKey@toks\romannumeral\bell@CKey@Flags\endcsname{n}%
+	\fi\fi
+	\@tmpcnta\z@
+}
+\def\bell@CKey@resetFlag{%
+	\count@\z@
+	\loop \ifnum\count@<24%
+		\csname bell@CKey@toks\romannumeral\bell@CKey@Flags\endcsname{x}%
+		\advance\count@\@ne
+	\repeat
+}
+
+\newcount\bell@CKey@Flags
+\def\bell@CKey@getArgs#1\relax{%
+	\bell@CKey@Flags0%
+	\@tempcnta0%
+	\def\@rgs{#1}%
+	\loop
+		\edef\t@ruc{\expandafter\f@tok \@rgs\relax\af@tok}%
+		\edef\s@uite{\expandafter\s@tok \@rgs\empty\af@tok}%
+		\ifcat a\t@ruc
+			\n@i\expandafter`\t@ruc\relax
+			\ifnum\n@i=`C\relax\bell@CKey@Flag0\fi
+			\ifnum\n@i=`D\relax\bell@CKey@Flag1\fi
+			\ifnum\n@i=`E\relax\bell@CKey@Flag2\fi
+			\ifnum\n@i=`F\relax\bell@CKey@Flag3\fi
+			\ifnum\n@i=`G\relax\bell@CKey@Flag4\fi
+			\ifnum\n@i=`A\relax\bell@CKey@Flag5\fi
+			\ifnum\n@i=`B\relax\bell@CKey@Flag6\fi
+			\ifnum\n@i=`c\relax\bell@CKey@Flag7\fi
+			\ifnum\n@i=`d\relax\bell@CKey@Flag8\fi
+			\ifnum\n@i=`e\relax\bell@CKey@Flag9\fi
+			\ifnum\n@i=`f\relax\bell@CKey@Flag10\fi
+			\ifnum\n@i=`g\relax\bell@CKey@Flag11\fi
+			\ifnum\n@i=`a\relax\bell@CKey@Flag12\fi
+			\ifnum\n@i=`b\relax\bell@CKey@Flag13\fi
+			\bell@CKey@setFlag
+		\else
+			\if ^\t@ruc \@tmpcnta\@ne  \fi
+			\if _\t@ruc \@tmpcnta\m@ne \fi
+		\fi
+		\ifx\s@uite\empty \tok@remainfalse
+		\else \tok@remaintrue
+		\fi
+		\iftok@remain \let\@rgs\s@uite%
+	\repeat%
+}
+
+
+
+\newcommand{\chordKeyboard}[1]{%
+	\bell@CKey@getArgs#1\relax%
+	\begin{tikzpicture}[xscale=0.1,yscale=0.4]% tikzpicture環境開始
+	\foreach \OctaveNum in{0, 1}{%
+		\pgfmathsetlength{\bellTempdima}{490mm * \OctaveNum}%
+		\draw (\bellTempdima , 0) rectangle +(490mm,10);
+		\foreach \num in{0, 1, ..., 6}{%
+			\pgfmathsetlength{\bellTempdima}{70mm * \num + 490mm * \OctaveNum}%
+			\draw(\bellTempdima , 0) -- ++(0, 15);
+		}
+	%490/ 7 = 70, 70 *3 /5 = 42, 70 *4 /7 =40 
+		\foreach \num in{1, 3}{%
+			\pgfmathsetlength{\bellTempdima}{42mm * \num + 490mm * \OctaveNum}%
+			\fill (\bellTempdima , 15) rectangle +(42mm , -5);
+		}
+		\foreach \num in{1, 3, 5}{%
+			\pgfmathsetlength{\bellTempdima}{40mm * \num + 210mm + 490mm * \OctaveNum}%
+			\fill (\bellTempdima , 15) rectangle +(40mm , -5);
+		}
+	}
+	\loop \ifnum\count@<24%
+		%
+		\advance\count@\@ne
+	\repeat
+	\end{tikzpicture} % tikzpicture環境終了
+}
+\bell@CKey@init

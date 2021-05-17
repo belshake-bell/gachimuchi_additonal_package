@@ -1,0 +1,227 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                              %
+%      GGGGG      UUU     UUU   IIIII   TTTTTTTTT      A        RRRRRRR        %
+%     G     G      U       U      I         T         A A       R      R       %
+%    G       G     U       U      I         T        A   A      R       R      %
+%    G             U       U      I         T       A     A     R       R      %
+%    G             U       U      I         T      A       A    RRRRRRRR       %
+%    G     GGGG    U       U      I         T      AAAAAAAAA    R      R       %
+%    G       G     U       U      I         T      A       A    R       R      %
+%     G     GG      U     U       I         T      A       A    R       R      %
+%      GGGGG G       UUUUU      IIIII       T      A       A    R       R      %
+%                                                                              %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{GuitarFingering}[2017/11/11 Guitar Fingering Macro set]
+
+\newdimen\GtrF@tempdima
+\newdimen\GtrF@tempdimb
+\newdimen\GtrF@tempdimc
+\newcount\GtrF@tempcnta
+\newcount\GtrF@tempcntb
+\newcount\GtrF@tempcntc
+\newtoks\GtrF@temptoka
+
+\newcount\GtrF@stringsNumber% (弦の数)-1
+\newcount\GtrF@getStringsNumberCount% \getStringsNumberの返り値を受け取る
+\newcount\GtrF@leftFretNumberDefault% 左端フレットの番号(default)
+\newcount\GtrF@leftFretNumber% 左端フレットの番号(>=0)
+\newcount\GtrF@rightFretNumber% 右端フレットの番号
+\newcount\GtrF@BarreIndex% Barre番号
+\newcount\GtrF@PressIndex% Press番号
+\newcount\GtrF@OpenIndex% Open番号
+
+\newdimen\GtrF@heightOfFret% 全体の高さ
+\newdimen\GtrF@widthOfFret% フレット間の距離
+\newdimen\GtrF@heightOfCross% バツ印の高さ
+
+%\GtrF@widthOfFret 3mm
+\newif\ifGtrF@star
+\newif\ifGtrF@star
+
+
+%
+% 内部的には弦の番号を下から0, 1,... と名付けています
+%
+%
+%
+\newcommand{\setStringsNumber}[1]{\GtrF@tempcnta#1 \advance\GtrF@tempcnta\m@ne
+  \GtrF@stringsNumber\GtrF@tempcnta}
+\newcommand{\getStringsNumber}[1]{%
+  \GtrF@getStringsNumberCount#1
+  \GtrF@getStringsNumberCount -\GtrF@getStringsNumberCount
+  \advance\GtrF@getStringsNumberCount \GtrF@stringsNumber
+  \advance\GtrF@getStringsNumberCount \@ne
+}
+\newcommand{\GtrFinger}{\settoheight{\GtrF@heightOfFret}{漢}%
+  \@ifstar{\GtrF@startrue\GtrF@base}{\GtrF@base}}
+\newcommand{\GtrF@base}[2][\GtrF@heightOfFret]{%
+  \GtrF@heightOfFret#1%
+  \divide\GtrF@heightOfFret\GtrF@stringsNumber
+  \GtrF@widthOfFret3\GtrF@heightOfFret
+  \ifGtrF@star \GtrF@leftFretNumberDefault\z@
+  \else \GtrF@leftFretNumberDefault24\relax
+  \fi
+  \advance\GtrF@leftFretNumberDefault\m@ne
+  \ifnum \GtrF@leftFretNumberDefault<\z@ \GtrF@leftFretNumberDefault\z@ \fi
+  \GtrF@leftFretNumber\GtrF@leftFretNumberDefault
+  \GtrF@rightFretNumber\m@ne
+  \GtrF@BarreIndex\z@ \GtrF@PressIndex\z@ \GtrF@OpenIndex\z@
+  \begin{tikzpicture}[baseline=0pt,inner sep=0pt]
+  \let\GtrF@drawingHook\empty
+  \let\Barre\GtrF@setBarre \let\Press\GtrF@setPress
+  \let\Open\GtrF@setOpen \let\Chord\GtrF@setChord% set alias
+  #2\relax
+  \GtrF@drawingBase
+  \GtrF@drawBarre
+  \GtrF@drawPress
+  \GtrF@drawingHook
+  \end{tikzpicture}
+  \GtrF@starfalse
+}
+\let\GtrF@drawingHook\empty
+
+\def\GtrF@alignFretPosition#1{%
+  \GtrF@tempcnta#1\relax
+  \ifnum \GtrF@tempcnta>\GtrF@rightFretNumber
+    \GtrF@rightFretNumber\GtrF@tempcnta\fi
+  \advance\GtrF@tempcnta\m@ne
+  \ifnum \GtrF@tempcnta<\GtrF@leftFretNumber
+    \GtrF@leftFretNumber\GtrF@tempcnta\fi
+  \typeout{\noexpand\GtrF@leftFretNumber = \the\GtrF@leftFretNumber}%
+  \typeout{\noexpand\GtrF@rightFretNumber = \the\GtrF@rightFretNumber}%
+}
+
+\def\GtrF@drawingBase{%
+  % draw nut
+  \ifnum \GtrF@leftFretNumber=\z@
+    \draw[line width=1.2pt] (-.6pt,0)
+      -- +(0,\GtrF@stringsNumber\GtrF@heightOfFret);\fi
+  % calculate left fret and right fret
+  \GtrF@tempcnta\GtrF@rightFretNumber \advance\GtrF@tempcnta-\f@ur
+  \ifnum \GtrF@tempcnta<\GtrF@leftFretNumber
+    \GtrF@rightFretNumber\GtrF@leftFretNumber
+    \advance\GtrF@rightFretNumber\f@ur
+  \fi
+  % draw strings
+  \GtrF@tempcnta\GtrF@rightFretNumber
+  \advance\GtrF@tempcnta-\GtrF@leftFretNumber
+  \foreach \num in{0, 1, ...,\GtrF@stringsNumber}{%
+    \draw[thin]
+      (\ifnum \GtrF@leftFretNumber=\@ne
+        -1.2pt\else 0\fi,
+        \num\GtrF@heightOfFret) --
+        +($(\GtrF@tempcnta\GtrF@widthOfFret,0)+(\h@lf\GtrF@widthOfFret,0)$);
+  }%
+  % draw fret
+  \GtrF@tempcnta\GtrF@leftFretNumber
+  \advance\GtrF@tempcnta\@ne
+  \foreach \num [evaluate=\num as \fretcnt using \num-\GtrF@leftFretNumber]%
+   in{\GtrF@tempcnta, ..., \GtrF@rightFretNumber}{%
+    \draw[thin] (\fretcnt\GtrF@widthOfFret,0)
+      -- +(0,\GtrF@stringsNumber\GtrF@heightOfFret);
+  }%
+  % draw fret number
+  \GtrF@tempcnta\GtrF@leftFretNumber
+  \advance\GtrF@tempcnta\@ne
+  \foreach \num [evaluate=\num as \fretcnt using \num-\GtrF@leftFretNumber]%
+   in{\GtrF@tempcnta, ..., \GtrF@rightFretNumber}{%
+    \node at ($(\fretcnt\GtrF@widthOfFret,-\GtrF@heightOfFret)-(\h@lf\GtrF@widthOfFret,0)$)
+      {\resizebox{!}{0.8\GtrF@heightOfFret}{\pgfmathint{\num}\pgfmathresult f}};
+  }%
+}
+
+% 
+% #1 fret pos; #2 start string of Barre; #3 end string of Barre
+\def\GtrF@setBarre#1#2#3{% バレー
+  \GtrF@alignFretPosition{#1}%
+  \getStringsNumber{#2}\GtrF@tempcnta\GtrF@getStringsNumberCount%
+  \getStringsNumber{#3}\GtrF@tempcntb\GtrF@getStringsNumberCount%
+%  set the macros
+  \advance\GtrF@BarreIndex\@ne
+  \expandafter\edef\csname GtrF@BarreFret\romannumeral\GtrF@BarreIndex\endcsname{#1}%
+  \expandafter\edef\csname GtrF@BarreStart\romannumeral\GtrF@BarreIndex\endcsname{\the\GtrF@tempcnta}%
+  \expandafter\edef\csname GtrF@BarreEnd\romannumeral\GtrF@BarreIndex\endcsname{\the\GtrF@tempcntb}%
+}
+
+\def\GtrF@drawBarre{% バレー
+  \loop\ifnum\GtrF@BarreIndex>\z@
+    \expandafter\let\expandafter\GtrF@BarreFret \csname GtrF@BarreFret\romannumeral\GtrF@BarreIndex\endcsname
+    \expandafter\let\expandafter\GtrF@BarreStart\csname GtrF@BarreStart\romannumeral\GtrF@BarreIndex\endcsname
+    \expandafter\let\expandafter\GtrF@BarreEnd  \csname GtrF@BarreEnd\romannumeral\GtrF@BarreIndex\endcsname
+%    barre fret
+    \GtrF@tempcnta\GtrF@BarreFret \advance\GtrF@tempcnta-\GtrF@leftFretNumber
+    \GtrF@tempdima\GtrF@tempcnta\GtrF@widthOfFret
+    \advance \GtrF@tempdima-\h@lf\GtrF@widthOfFret
+%    barre strings
+    \GtrF@tempdimb\GtrF@BarreStart\GtrF@heightOfFret
+    \GtrF@tempdimc\GtrF@BarreEnd\GtrF@heightOfFret
+    \typeout{\noexpand\GtrF@tempdimb = \the\GtrF@tempdimb, \noexpand\GtrF@tempdimc  =\the\GtrF@tempdimc}%
+%    drawing
+    \draw[line width=0.8\noexpand\GtrF@heightOfFret,line cap=round]
+         (\GtrF@tempdima, \GtrF@tempdimb) -- (\GtrF@tempdima,\GtrF@tempdimc);
+    \advance\GtrF@BarreIndex\m@ne
+  \repeat
+}
+% 
+% #1 string of pressing; #2 fret pos
+\def\GtrF@setPress#1#2{% 押弦
+  \GtrF@alignFretPosition{#2}%
+  \getStringsNumber{#1}\GtrF@tempcnta\GtrF@getStringsNumberCount%
+%  set the macros
+  \advance\GtrF@PressIndex\@ne
+  \expandafter\edef\csname GtrF@PressFret\romannumeral\GtrF@PressIndex\endcsname{#2}%
+  \expandafter\edef\csname GtrF@PressStrings\romannumeral\GtrF@PressIndex\endcsname{\the\GtrF@tempcnta}%
+}
+\def\GtrF@drawPress{% 押弦
+  \loop\ifnum\GtrF@PressIndex>\z@
+    \expandafter\let\expandafter\GtrF@PressFret \csname GtrF@PressFret\romannumeral\GtrF@PressIndex\endcsname
+    \expandafter\let\expandafter\GtrF@PressStrings\csname GtrF@PressStrings\romannumeral\GtrF@PressIndex\endcsname
+%    Press fret
+    \GtrF@tempcnta\GtrF@PressFret \advance\GtrF@tempcnta-\GtrF@leftFretNumber
+    \GtrF@tempdima\GtrF@tempcnta\GtrF@widthOfFret
+    \advance \GtrF@tempdima-\h@lf\GtrF@widthOfFret
+%    Press strings
+    \GtrF@tempdimb\GtrF@PressStrings\GtrF@heightOfFret
+    \fill
+      (\the\GtrF@tempdima, \the\GtrF@tempdimb) circle [radius=.4\noexpand\GtrF@heightOfFret];
+    \advance\GtrF@PressIndex\m@ne
+  \repeat
+}
+
+% 
+% #1 string of pressing; #2 open or muted(o or m)
+\def\GtrF@setOpen#1#2{% 押弦
+  \getStringsNumber{#1}\GtrF@tempcnta\GtrF@getStringsNumberCount%
+  \expandafter\GtrF@temptoka\expandafter{\f@tok#2\af@tok}%
+  \expandafter\GtrF@tempdima\ifnum \GtrF@leftFretNumber=\@ne -1.2pt\else \z@\fi \advance\GtrF@tempdima-\qu@rt\GtrF@widthOfFret
+  \GtrF@tempdimb\GtrF@tempcnta\GtrF@heightOfFret
+  \edef\GtrF@drawingHook{%
+    \expandonce{\GtrF@drawingHook}%
+%    \expandonce{%
+%      描画本体
+      \noexpand\path
+        \expandafter\ifx \the\GtrF@temptoka o
+          \unexpanded{[ultra thin, draw]}
+            (\the\GtrF@tempdima, \the\GtrF@tempdimb) circle [radius=.4\noexpand\GtrF@heightOfFret];
+        \else
+          node at (\the\GtrF@tempdima, \the\GtrF@tempdimb)
+            {\unexpanded{\resizebox{!}{0.8\GtrF@heightOfFret}{\Cross}}};
+        \fi
+%    }
+  }
+}
+% 
+% #1 chord name[strings]
+\def\GtrF@setChord#1{% chord name
+%  set the macros
+  \def\GtrF@chordName{#1}%
+}
+
+\setStringsNumber{6}
+
+\newcommand{\GtrChordE}[1][\GtrF@heightOfFret]{\GtrFinger*[#1]{\Press31\Press42\Press52\Open1o\Open2o\Open6o}}
+\newcommand{\GtrChordA}[1][\GtrF@heightOfFret]{\GtrFinger*[#1]{\Barre224\Open1o\Open5o\Open6m}}
+\newcommand{\GtrChordD}[1][\GtrF@heightOfFret]{\GtrFinger*[#1]{\Press12\Press23\Press32\Open4o\Open5m\Open6m}}
+\newcommand{\GtrChordG}[1][\GtrF@heightOfFret]{\GtrFinger*[#1]{\Press13\Press52\Press63\Open2o\Open3o\Open4o}}
+\newcommand{\GtrChordC}[1][\GtrF@heightOfFret]{\GtrFinger*[#1]{\Press21\Press42\Press53\Open1o\Open3o\Open6m}}
