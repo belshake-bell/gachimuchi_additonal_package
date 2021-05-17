@@ -1,5 +1,5 @@
 % coding=utf-8
-\ProvidesPackage{gcmcstyle}[2020/03/08 gachimuchi loading packages]
+\ProvidesPackage{gcmcstyle}[2021/05/17 gachimuchi loading packages]
 %%==============================================================================
 %% Declare Option
 %%==============================================================================
@@ -28,7 +28,7 @@
   \RequirePackage[pass]{geometry}
 }
 \ifgcmc@usebiblatex
-  \RequirePackage[backend=biber,style=numeric,hyperref=true]{biblatex}
+  \RequirePackage[backend=biber,style=numeric,hyperref=true,casechanger=latex2e]{biblatex}
 \fi
 \RequirePackage{bellsloadingpkgs}
 \RequirePackage{gachimuchimacro}
@@ -334,7 +334,7 @@
 %%==============================================================================
 %% biblatex 設定
 %%==============================================================================
-% 2020-10-01あたりで壊れるので直そう！
+% 2020-10-01あたりで壊れるので直そう！ <-直しました（casechanger=latex2eオプションで）
 \providecommand{\ExecuteBibliographyOptions}[1]{}
 \ExecuteBibliographyOptions{refsegment=chapter}
 
