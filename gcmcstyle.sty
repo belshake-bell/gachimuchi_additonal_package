@@ -263,12 +263,13 @@
   \DeclareFontShape{JT2}{gt}{b}{n}{<-> s * [\bell@gcmc@scale] jlreq--upnmlgothb-v}{}
 \fi
 %% otfの吐くwarning対処のためにbold seriesを明示的に示しておく．
-\@ifpackageloaded{otf}{%
-  \DeclareFontShape{JY2}{hmc}{b}{n}{<->ssub*hmc/bx/n}{}
-  \DeclareFontShape{JT2}{hmc}{b}{n}{<->ssub*hmc/bx/n}{}
-  \DeclareFontShape{JY2}{hgt}{b}{n}{<->ssub*hgt/bx/n}{}
-  \DeclareFontShape{JT2}{hgt}{b}{n}{<->ssub*hgt/bx/n}{}
-}{}
+%% TL 2020Frozenでは不要
+% \@ifpackageloaded{otf}{%
+%   \DeclareFontShape{JY2}{hmc}{b}{n}{<->ssub*hmc/bx/n}{}
+%   \DeclareFontShape{JT2}{hmc}{b}{n}{<->ssub*hmc/bx/n}{}
+%   \DeclareFontShape{JY2}{hgt}{b}{n}{<->ssub*hgt/bx/n}{}
+%   \DeclareFontShape{JT2}{hgt}{b}{n}{<->ssub*hgt/bx/n}{}
+% }{}
 
 \iffalse % まだ調整中
   % 和文間隔
