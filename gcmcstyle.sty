@@ -96,6 +96,50 @@
 \def\loffset#1#2{\begingroup\edef\s@o@{#1\qn@width}\offs@t{#2}\endgroup}%
 \def\roffset#1#2{\begingroup\edef\s@o@{-#1\qn@width}\offs@t{#2}\endgroup}%
 
+\font \music@two@mm musix2mm
+\font \music@three@mm musix3mm
+\font \music@four@mm musix4mm
+\font \music@five@mm musix5mm
+\font \music@six@mm musix6mm
+\font \music@eight@mm musix8mm
+\font \music@ten@mm musix10mm
+
+\def\comput@fonts{%
+  \let\musicLargefont\music@eight@mm
+  \let\musiclargefont\music@six@mm
+  \let\musicnorfont\music@five@mm
+  \let\musicsmallfont\music@four@mm
+  \let\musictinyfont\music@two@mm
+  \let\xgregLargefont\xgregtwenty
+  \let\xgreglargefont\xgregsixteen
+  \let\xgregnorfont\xgregthirteen
+  \let\xgregsmallfont\xgregeleven
+  \let\xgregtinyfont\xgregnine
+  \let\slurd\slurdsixteen \let\sluru\slurusixteen
+  \let\hslurd\hslurdsixteen \let\hsluru\hslurusixteen
+  \let\meternorfont\tenbf \let\metersmallfont\eightbf  % version 1.16  RDT
+  \let\meterbigfont\twelvebf \let\meterlargefont\frtbf
+  \let\meterLargefont\svtbf
+  \let\tinyppff\ppfftwelve   % version 1.17  RDT
+  \let\smallppff\ppfftwelve
+  \let\normppff\ppffsixteen
+  \let\medppff\ppfftwenty
+  \def\txtfont{%
+  \ifdim\internote<.95\Internote \tinytype\it  % version 1.22 RDT
+  \else\ifdim\internote<1.19\Internote \smalltype\it
+  \else\ifdim\internote<1.43\Internote \Smalltype\it
+  \else\normtype\it\fi\fi\fi}%
+  \let\tabnorfnt\fivess \let\tablargefnt\sixss
+  \let\tabLargefnt\eightss \let\tabsmallfnt\fourss
+  \let\tabnorcleffnt\eightdc \let\tablargecleffnt\tendc
+  \let\tabLargecleffnt\twelvedc \let\tabsmallcleffnt\sixdc
+  \def\tabstringfnt{%
+  \ifdim\internote<.95\Internote \fourss  %  1.29   RDT
+  \else\ifdim\internote<1.19\Internote \fivess
+  \else\ifdim\internote<1.43\Internote \sevenss
+  \else\eightss\fi\fi\fi}%
+}%
+
 %%==============================================================================
 %% 体裁
 %%==============================================================================
@@ -169,18 +213,18 @@
 \renewcommand{\chapref}[1]{\@chapapp\ref{chap:#1}\@chappos}
 
 %% フォントサイズ設定
-%% たぶんここでやるよりクラス・ファイルでやるべき
-%% normalsize：  {12\ascQ}{21trueH}
-%% small：       {10\ascQ}{16trueH}
-%% footnotesize： {9\ascQ}{13trueH}
-%% scriptsize：   {8\ascQ}{10trueH}
-%% tiny：         {7\ascQ} {9trueH}
-%% large：       {14\ascQ}{21trueH}
-%% Large：       {17\ascQ}{25trueH}
-%% LARGE：       {20\ascQ}{28trueH}
-%% huge：        {25\ascQ}{33trueH}
-%% Huge：        {30\ascQ}{40trueH}
-%% HUGE：        {36\ascQ}{48trueH}
+% たぶんここでやるよりクラス・ファイルでやるべき
+% normalsize：  {12\ascQ}{21trueH}
+% small：       {10\ascQ}{16trueH}
+% footnotesize： {9\ascQ}{13trueH}
+% scriptsize：   {8\ascQ}{10trueH}
+% tiny：         {7\ascQ} {9trueH}
+% large：       {14\ascQ}{21trueH}
+% Large：       {17\ascQ}{25trueH}
+% LARGE：       {20\ascQ}{28trueH}
+% huge：        {25\ascQ}{33trueH}
+% Huge：        {30\ascQ}{40trueH}
+% HUGE：        {36\ascQ}{48trueH}
 \ifjsc@mag\catcode`\?=9\else\catcode`\?=11\let\p@?\jsc@mpt\fi
 \def\n@baseline{21\trueH}
 \renewcommand{\normalsize}{%
@@ -252,7 +296,7 @@
   \@ifundefined{Cjascale}{%
     \if@jsclasses\def\bell@gcmc@scale{0.92469}\else\def\bell@gcmc@scale{0.962216}\fi
   }{\edef\bell@gcmc@scale{\Cjascale}}
-%% jlreq-deluxeを読み込むとかではなく，単純にJFMを設定するだけ．
+% jlreq-deluxeを読み込むとかではなく，単純にJFMを設定するだけ．
   \DeclareFontShape{JY2}{mc}{m}{n}{<-> s * [\bell@gcmc@scale] jlreq--upnmlminr-h}{}
   \DeclareFontShape{JT2}{mc}{m}{n}{<-> s * [\bell@gcmc@scale] jlreq--upnmlminr-v}{}
   \DeclareFontShape{JY2}{gt}{m}{n}{<-> s * [\bell@gcmc@scale] jlreq--upnmlgothr-h}{}
@@ -262,8 +306,8 @@
   \DeclareFontShape{JY2}{gt}{b}{n}{<-> s * [\bell@gcmc@scale] jlreq--upnmlgothb-h}{}
   \DeclareFontShape{JT2}{gt}{b}{n}{<-> s * [\bell@gcmc@scale] jlreq--upnmlgothb-v}{}
 \fi
-%% otfの吐くwarning対処のためにbold seriesを明示的に示しておく．
-%% TL 2020Frozenでは不要
+% otfの吐くwarning対処のためにbold seriesを明示的に示しておく．
+% TL 2020Frozenでは不要
 % \@ifpackageloaded{otf}{%
 %   \DeclareFontShape{JY2}{hmc}{b}{n}{<->ssub*hmc/bx/n}{}
 %   \DeclareFontShape{JT2}{hmc}{b}{n}{<->ssub*hmc/bx/n}{}
@@ -340,11 +384,11 @@
 \ExecuteBibliographyOptions{refsegment=chapter}
 
 \ifgcmc@usebiblatex
-%% paren (from biblatex.sty)
+% paren (from biblatex.sty)
   \renewcommand*{\bibleftparen}{（}
   \renewcommand*{\bibrightparen}{）\midsentence}
   \let\midsentence\relax
-%% citetitle (from biblatex.def)
+% citetitle (from biblatex.def)
   \DeclareCiteCommand{\citetitle}
     {\boolfalse{citetracker}%
      \boolfalse{pagetracker}%
@@ -356,7 +400,7 @@
      ~\mkbibbrackets{\usebibmacro{cite}}}
     {\multicitedelim}
     {\usebibmacro{postnote}}
-%% citetitle (from biblatex.def)
+% citetitle (from biblatex.def)
   \newrobustcmd*{\citetitleauthor}{\AtNextCite{\DeclareNameAlias{labelname}{given-family}}\bell@citetitleauthor}
   \DeclareCiteCommand{\bell@citetitleauthor}
     {\boolfalse{citetracker}%
@@ -370,7 +414,7 @@
      \mkbibbrackets{\usebibmacro{cite}}}%
     {\multicitedelim}
     {\usebibmacro{postnote}}
-%% citetitleを括弧で囲むヤツ？
+% citetitleを括弧で囲むヤツ？
   \DeclareCiteCommand{\citetitlep}[\mkbibparens]
     {\boolfalse{citetracker}%
      \boolfalse{pagetracker}%
@@ -405,10 +449,10 @@
 \settowidth{\dflwidth}{\musixchar51}
 \settowidth{\dshwidth}{\musixchar53}
 
-%% <*draft>
+% <*draft>
 \ifdraft{%
   \usepackage[inline]{showlabels}
   \renewcommand{\showlabelfont}{\small\ttfamily\color{blue}}
 }{}
-%% </draft>
+% </draft>
 \endinput
