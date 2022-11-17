@@ -305,6 +305,33 @@
   \DeclareFontShape{JT2}{mc}{b}{n}{<-> s * [\bell@gcmc@scale] jlreq--upnmlminb-v}{}
   \DeclareFontShape{JY2}{gt}{b}{n}{<-> s * [\bell@gcmc@scale] jlreq--upnmlgothb-h}{}
   \DeclareFontShape{JT2}{gt}{b}{n}{<-> s * [\bell@gcmc@scale] jlreq--upnmlgothb-v}{}
+% italicをnormalにフォールバック
+  \DeclareFontShape{JY2}{mc}{m}{it}{<->ssub*mc/m/n}{}
+  \DeclareFontShape{JT2}{mc}{m}{it}{<->ssub*mc/m/n}{}
+  \DeclareFontShape{JY2}{gt}{m}{it}{<->ssub*gt/m/n}{}
+  \DeclareFontShape{JT2}{gt}{m}{it}{<->ssub*gt/m/n}{}
+  \DeclareFontShape{JY2}{mc}{b}{it}{<->ssub*mc/b/n}{}
+  \DeclareFontShape{JT2}{mc}{b}{it}{<->ssub*mc/b/n}{}
+  \DeclareFontShape{JY2}{gt}{b}{it}{<->ssub*gt/b/n}{}
+  \DeclareFontShape{JT2}{gt}{b}{it}{<->ssub*gt/b/n}{}
+% slantをnormalにフォールバック
+  \DeclareFontShape{JY2}{mc}{m}{sl}{<->ssub*mc/m/n}{}
+  \DeclareFontShape{JT2}{mc}{m}{sl}{<->ssub*mc/m/n}{}
+  \DeclareFontShape{JY2}{gt}{m}{sl}{<->ssub*gt/m/n}{}
+  \DeclareFontShape{JT2}{gt}{m}{sl}{<->ssub*gt/m/n}{}
+  \DeclareFontShape{JY2}{mc}{b}{sl}{<->ssub*mc/b/n}{}
+  \DeclareFontShape{JT2}{mc}{b}{sl}{<->ssub*mc/b/n}{}
+  \DeclareFontShape{JY2}{gt}{b}{sl}{<->ssub*gt/b/n}{}
+  \DeclareFontShape{JT2}{gt}{b}{sl}{<->ssub*gt/b/n}{}
+% smallcapsをnormalにフォールバック
+  \DeclareFontShape{JY2}{mc}{m}{sc}{<->ssub*mc/m/n}{}
+  \DeclareFontShape{JT2}{mc}{m}{sc}{<->ssub*mc/m/n}{}
+  \DeclareFontShape{JY2}{gt}{m}{sc}{<->ssub*gt/m/n}{}
+  \DeclareFontShape{JT2}{gt}{m}{sc}{<->ssub*gt/m/n}{}
+  \DeclareFontShape{JY2}{mc}{b}{sc}{<->ssub*mc/b/n}{}
+  \DeclareFontShape{JT2}{mc}{b}{sc}{<->ssub*mc/b/n}{}
+  \DeclareFontShape{JY2}{gt}{b}{sc}{<->ssub*gt/b/n}{}
+  \DeclareFontShape{JT2}{gt}{b}{sc}{<->ssub*gt/b/n}{}
 \fi
 % otfの吐くwarning対処のためにbold seriesを明示的に示しておく．
 % TL 2020Frozenでは不要
